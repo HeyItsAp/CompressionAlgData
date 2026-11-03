@@ -1,6 +1,8 @@
 package heyitsap.AlgData.compression;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.PriorityQueue;
 
 class Node {
@@ -9,11 +11,12 @@ class Node {
     Node left;
     Node right;
 
-    public Node (){
-        this.character = 'a';
-        this.frequency = 0;
-        this.left = null;
-        this.right = null;
+    // Non-leaf
+    public Node (Node left, Node right){
+        this.character = '¨';
+        this.frequency = left.frequency + right.frequency;
+        this.left = left;
+        this.right = right;
     }
 
     public Node (char character, int frequency){
@@ -41,7 +44,27 @@ class Node {
 }
 
 public class HuffmanEncoder {
-    public static void test(){
+    public static HashMap<Character, String> Codes(
+            Node root,
+            HashMap<Character, String> ans,
+            String code) {
+
+        if (root == null) return ans;
+
+        // Leaf node
+        if (root.left == null && root.right == null) {
+            if (code.equals("")) code = "0";
+
+            ans.put(root.character, code);
+            return ans;
+        }
+
+        Codes(root.left, ans, code + "0");
+        Codes(root.right, ans, code + "1");
+
+        return ans;
+    }
+    public static Node ConstructTree(){
         PriorityQueue<Node> heap =
                 new PriorityQueue<>(
                         Comparator.comparingInt(node -> node.frequency)
@@ -70,14 +93,11 @@ public class HuffmanEncoder {
             heap.remove(secondSmallets);
 
             // Create a new node with frequency is the addition of both, left children is the smallest and right is the second smallest
-            Node BigBoyNode = new Node();
-            BigBoyNode.setFrequency(smallest.frequency + secondSmallets.frequency);
-            BigBoyNode.setLeft(smallest);
-            BigBoyNode.setRight(secondSmallets);
+            Node BigBoyNode = new Node(smallest, secondSmallets);
             heap.add(BigBoyNode);
         }
+        System.out.println(heap.peek().character + ": " + heap.peek().frequency);
 
-
-
+        return heap.peek();
     }
 }
