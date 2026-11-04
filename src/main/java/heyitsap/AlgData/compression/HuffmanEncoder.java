@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 class Node {
-    char character;
+    int symbol;
     int frequency;
     Node left;
     Node right;
@@ -16,17 +16,18 @@ class Node {
         this.frequency = left.frequency + right.frequency;
         this.left = left;
         this.right = right;
+        this.symbol = -1;
     }
 
-    public Node (char character, int frequency){
-        this.character = character;
+    public Node (int symbol, int frequency){
+        this.symbol = symbol;
         this.frequency = frequency;
         this.left = null;
         this.right = null;
     }
 
-    public void setCharacter(char character) {
-        this.character = character;
+    public void setSymbol(char character) {
+        this.symbol = character;
     }
 
     public void setFrequency(int frequency) {
@@ -43,19 +44,19 @@ class Node {
 }
 
 public class HuffmanEncoder {
-    public static HashMap<Character, String> Codes(
+    public static HashMap<Integer, String> Codes(
             Node root,
-            HashMap<Character, String> ans,
+            HashMap<Integer, String> ans,
             String code) {
 
         if (root == null) return ans;
 
-        System.out.println(root.character + ": " +root.frequency );
+        System.out.println(root.symbol + ": " +root.frequency );
         // Leaf node
         if (root.left == null && root.right == null) {
             if (code.equals("")) code = "0";
 
-            ans.put(root.character, code);
+            ans.put(root.symbol, code);
             return ans;
         }
 
@@ -64,7 +65,7 @@ public class HuffmanEncoder {
 
         return ans;
     }
-    public static Node ConstructTree(){
+    public static Node ConstructTree(int[] frequncies){
         PriorityQueue<Node> heap =
                 new PriorityQueue<>(
                         Comparator.comparingInt(node -> node.frequency)
@@ -72,19 +73,17 @@ public class HuffmanEncoder {
         // ==== ======================
         // Making the tree, the root
         // ==== ======================
-        Node CharacterB = new Node('B', 9);
-        Node CharacterD = new Node('D', 13);
-        Node CharacterA = new Node('A', 5);
-        Node CharacterC = new Node('C', 12);
+        for (int i = 0; i < frequncies.length; i++){
+            if(frequncies[i] > 0){
+                heap.add(new Node(i, frequncies[i]));
+            }
+        }
 
-        heap.add(CharacterA);
-        heap.add(CharacterB);
-        heap.add(CharacterC);
-        heap.add(CharacterD);
+        if (heap.isEmpty()){
+            return null;
+        }
 
-        System.out.println(heap.peek().character + ": " + heap.peek().frequency);
-
-
+        System.out.println(heap.peek().symbol + ": " + heap.peek().frequency);
         // ==== ======================
         // Making the tree, the root
         // ==== ======================
@@ -99,7 +98,7 @@ public class HuffmanEncoder {
             Node BigBoyNode = new Node(smallest, secondSmallets);
             heap.add(BigBoyNode);
         }
-        System.out.println(heap.peek().character + ": " + heap.peek().frequency);
+        System.out.println(heap.peek().symbol + ": " + heap.peek().frequency);
         return heap.peek();
     }
     public static int[] countFrequncies(List<LZToken> tokens){
