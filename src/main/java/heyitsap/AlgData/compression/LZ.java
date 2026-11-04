@@ -7,19 +7,22 @@ import java.util.List;
 class Token {
     int distance; // How many steps it needs to back
     int length; // How many steps forward after it has gone back it needs to copy
-    byte character; // The actual
+    byte character;// The actual
+    boolean isMatch;
 
     // Literal, just charcter
     public Token(byte character){
+        this.isMatch = false;
         this.character = character;
         this.distance= 0;
         this.length = 0;
     }
     // Match
-    public Token(int distance, int length, byte next){
-        this.character = next;
+    public Token(int distance, int length){
+        this.character = (byte) 0;
         this.distance = distance;
         this.length = length;
+        this.isMatch = true;
     }
 
 }
@@ -52,7 +55,7 @@ public class LZ {
             }
 
             if(bestLength >= MIN_MATCH){
-                tokens.add(new Token(bestOffset, bestLength, data[pos]));
+                tokens.add(new Token(bestOffset, bestLength);
                 pos += bestLength;
             } else {
                 tokens.add(new Token(data[pos]));
