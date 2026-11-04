@@ -10,7 +10,7 @@ class Token {
     byte character;// The actual
     boolean isMatch;
 
-    // Literal, just charcter
+    // Literal, just character
     public Token(byte character){
         this.isMatch = false;
         this.character = character;
@@ -43,8 +43,7 @@ public class LZ {
             int bestOffset = 0, bestLength = 0;
             for (int j = windowStart; j < pos; j++) {
                 int length = 0;
-                while (
-                        pos + length < data.length
+                while (pos + length < data.length
                                 && length < MAX_LEN
                                 && data[j + length] == data[pos + length]
                 ) length++;
@@ -55,7 +54,7 @@ public class LZ {
             }
 
             if(bestLength >= MIN_MATCH){
-                tokens.add(new Token(bestOffset, bestLength);
+                tokens.add(new Token(bestOffset, bestLength));
                 pos += bestLength;
             } else {
                 tokens.add(new Token(data[pos]));
