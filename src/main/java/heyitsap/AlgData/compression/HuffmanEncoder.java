@@ -13,7 +13,6 @@ class Node {
 
     // Non-leaf
     public Node (Node left, Node right){
-        this.character = '¨';
         this.frequency = left.frequency + right.frequency;
         this.left = left;
         this.right = right;
@@ -51,6 +50,7 @@ public class HuffmanEncoder {
 
         if (root == null) return ans;
 
+        System.out.println(root.character + ": " +root.frequency );
         // Leaf node
         if (root.left == null && root.right == null) {
             if (code.equals("")) code = "0";
@@ -69,6 +69,9 @@ public class HuffmanEncoder {
                 new PriorityQueue<>(
                         Comparator.comparingInt(node -> node.frequency)
                 );
+        // ==== ======================
+        // Making the tree, the root
+        // ==== ======================
         Node CharacterB = new Node('B', 9);
         Node CharacterD = new Node('D', 13);
         Node CharacterA = new Node('A', 5);
@@ -97,7 +100,6 @@ public class HuffmanEncoder {
             heap.add(BigBoyNode);
         }
         System.out.println(heap.peek().character + ": " + heap.peek().frequency);
-
         return heap.peek();
     }
 }
