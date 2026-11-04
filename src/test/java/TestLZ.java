@@ -1,5 +1,5 @@
 import heyitsap.AlgData.compression.LZ;
-import heyitsap.AlgData.compression.LZToken;
+import heyitsap.AlgData.compression.Objects.LZToken;
 import org.junit.Test;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class TestLZ {
     @Test
-    public void testLZCompression(){
+    public void testLZCompressionAndDecompression(){
         String[] samples = {
                 "",
                 "a",

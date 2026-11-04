@@ -1,47 +1,12 @@
 package heyitsap.AlgData.compression;
 
+import heyitsap.AlgData.compression.Objects.LZToken;
+import heyitsap.AlgData.compression.Objects.Node;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
-
-class Node {
-    int symbol;
-    int frequency;
-    Node left;
-    Node right;
-
-    // Non-leaf
-    public Node (Node left, Node right){
-        this.frequency = left.frequency + right.frequency;
-        this.left = left;
-        this.right = right;
-        this.symbol = -1;
-    }
-
-    public Node (int symbol, int frequency){
-        this.symbol = symbol;
-        this.frequency = frequency;
-        this.left = null;
-        this.right = null;
-    }
-
-    public void setSymbol(char character) {
-        this.symbol = character;
-    }
-
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
-
-    public void setRight(Node right) {
-        this.right = right;
-    }
-
-    public void setLeft(Node left) {
-        this.left = left;
-    }
-}
 
 public class HuffmanEncoder {
     public static HashMap<Integer, String> Codes(
@@ -89,10 +54,8 @@ public class HuffmanEncoder {
         // ==== ======================
         while (heap.size() != 1){
             // Get the two smallest frequency
-            Node smallest = heap.peek();
-            heap.remove(smallest);
-            Node secondSmallets = heap.peek();
-            heap.remove(secondSmallets);
+            Node smallest = heap.poll();
+            Node secondSmallets = heap.poll();
 
             // Create a new node with frequency is the addition of both, left children is the smallest and right is the second smallest
             Node BigBoyNode = new Node(smallest, secondSmallets);

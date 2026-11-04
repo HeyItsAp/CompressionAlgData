@@ -1,5 +1,7 @@
 package heyitsap.AlgData.compression;
 
+import heyitsap.AlgData.compression.Objects.LZToken;
+
 import java.util.ArrayList;
 import java.util.List;
 

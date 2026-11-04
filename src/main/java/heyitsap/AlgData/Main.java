@@ -1,13 +1,15 @@
 package heyitsap.AlgData;
 
 import heyitsap.AlgData.compression.HuffmanEncoder;
+import heyitsap.AlgData.compression.LZ;
 
 import java.util.HashMap;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
 public class Main {
     static void main() {
-        System.out.println(HuffmanEncoder.Codes(HuffmanEncoder.ConstructTree(), new HashMap<Character, String>(), ""));
+        String sample = "\\begin{equation} x = \\frac{a}{b} \\end{equation} \\begin{equation} y = \\frac{c}{d} \\end{equation}";
+
+        System.out.println(HuffmanEncoder.Codes(HuffmanEncoder.ConstructTree(HuffmanEncoder.countFrequncies(LZ.compress(sample.getBytes(java.nio.charset.StandardCharsets.UTF_8)))), new HashMap<Integer, String>(), ""));
     }
 }

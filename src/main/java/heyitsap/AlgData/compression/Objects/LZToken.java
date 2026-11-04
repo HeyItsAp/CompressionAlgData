@@ -1,10 +1,10 @@
-package heyitsap.AlgData.compression;
+package heyitsap.AlgData.compression.Objects;
 
 public class LZToken {
-    int distance; // How many steps it needs to back
-    int length; // How many steps forward after it has gone back it needs to copy
-    byte character;// The actual
-    boolean isMatch;
+    public int distance; // How many steps it needs to back
+    public int length; // How many steps forward after it has gone back it needs to copy
+    public byte character;// The actual
+    public boolean isMatch;
 
     // Literal, just character
     public LZToken(byte character){
