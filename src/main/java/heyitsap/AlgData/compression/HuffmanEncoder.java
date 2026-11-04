@@ -102,4 +102,21 @@ public class HuffmanEncoder {
         System.out.println(heap.peek().character + ": " + heap.peek().frequency);
         return heap.peek();
     }
+    public static int[] countFrequncies(List<LZToken> tokens){
+        int[] frequencies = new int[512];
+
+        for (LZToken token : tokens) {
+            int symbol;
+
+            if (token.isMatch) {
+                symbol = 256 + (token.length - 3);
+            } else {
+                symbol = token.character & 0xFF;
+            }
+
+            frequencies[symbol]++;
+        }
+
+        return frequencies;
+    }
 }
