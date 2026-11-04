@@ -4,38 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-class Token {
-    int distance; // How many steps it needs to back
-    int length; // How many steps forward after it has gone back it needs to copy
-    byte character;// The actual
-    boolean isMatch;
-
-    // Literal, just character
-    public Token(byte character){
-        this.isMatch = false;
-        this.character = character;
-        this.distance= 0;
-        this.length = 0;
-    }
-    // Match
-    public Token(int distance, int length){
-        this.character = (byte) 0;
-        this.distance = distance;
-        this.length = length;
-        this.isMatch = true;
-    }
-
-}
-
 public class LZ {
-    public static void compress(Byte[] data){
+    public static List<LZToken> compress(byte[] data){
         // Modifiyal bits:
         int WindowSize = 4096;
         int MAX_LEN = 258;
         int MIN_MATCH = 3;
 
 
-        List<Token> tokens = new ArrayList<>();
+        List<LZToken> LZTokens = new ArrayList<>();
         int pos = 0;
 
         while (pos < data.length) {
@@ -54,12 +31,29 @@ public class LZ {
             }
 
             if(bestLength >= MIN_MATCH){
-                tokens.add(new Token(bestOffset, bestLength));
+                LZTokens.add(new LZToken(bestOffset, bestLength));
                 pos += bestLength;
             } else {
-                tokens.add(new Token(data[pos]));
+                LZTokens.add(new LZToken(data[pos]));
                 pos++;
             }
         }
+        return LZTokens;
     }
+    public static byte[] decompress(List<LZToken> LZTokens, int originalSize) {
+        byte[] out = new byte[originalSize];
+        int pos = 0;
+        for (LZToken t : LZTokens) {
+            if (t.isMatch) {
+                int src = pos - t.distance;
+                for (int i = 0; i < t.length; i++) {
+                    out[pos++] = out[src + i];   // byte by byte, so overlap works
+                }
+            } else {
+                out[pos++] = t.character;
+            }
+        }
+        return out;
+    }
+
 }
