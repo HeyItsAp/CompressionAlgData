@@ -1,8 +1,14 @@
 package heyitsap.AlgData.compression;
 
+import heyitsap.AlgData.compression.Objects.BitReader;
+import heyitsap.AlgData.compression.Objects.BitWriter;
 import heyitsap.AlgData.compression.Objects.LZToken;
 import heyitsap.AlgData.compression.Objects.Node;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +42,7 @@ public class HuffmanEncoder {
                         Comparator.comparingInt(node -> node.frequency)
                 );
         // ==== ======================
-        // Making the tree, the root
+        //
         // ==== ======================
         for (int i = 0; i < frequncies.length; i++){
             if(frequncies[i] > 0){
@@ -80,5 +86,24 @@ public class HuffmanEncoder {
         }
 
         return frequencies;
+    }
+
+    private static void SerializeTree(Node node, BitWriter writer) {
+        if (node.left == null && node.right == null) {
+            writer.writeBit(1);
+            writer.writeBits(node.symbol, 9);
+            return;
+        }
+
+        writer.writeBit(0);
+
+        SerializeTree(node.left, writer);
+        SerializeTree(node.right, writer);
+    }
+
+    private static void writeTree(Node node) throws IOException {
+        BitWriter writer = new BitWriter();
+        SerializeTree(node, writer);
+        Files.write(Path.of("src/main/resources/compressed.txt"), writer.toByteArray());
     }
 }
