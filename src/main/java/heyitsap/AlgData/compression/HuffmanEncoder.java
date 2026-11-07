@@ -5,7 +5,7 @@ import heyitsap.AlgData.compression.Objects.BitWriter;
 import heyitsap.AlgData.compression.Objects.LZToken;
 import heyitsap.AlgData.compression.Objects.Node;
 
-import java.io.File;
+import java.io.EOFException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -105,5 +105,19 @@ public class HuffmanEncoder {
         BitWriter writer = new BitWriter();
         SerializeTree(node, writer);
         Files.write(Path.of("src/main/resources/compressed.txt"), writer.toByteArray());
+    }
+
+    private static Node readTree(BitReader reader) throws EOFException {
+        int isLeaf = reader.readBit();
+
+        if (isLeaf == 1){
+            int symbol = reader.readBits(9);
+            return new Node(symbol,0);
+        }
+
+        Node left = readTree(reader);
+        Node right = readTree(reader);
+
+        return new Node(left, right);
     }
 }
