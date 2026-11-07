@@ -19,17 +19,20 @@ public class Main {
     public static void main() {
         System.out.println("Yo");
 
-        String sample = "\\begin{equation} x = \\frac{a}{b} \\end{equation} \\begin{equation} y = \\frac{c}{d} \\end{equation}";
+        byte[] test;
+        byte[] compressedBytes;
 
-        byte[] compressedBytes = compressWithHuffman(sample.getBytes(java.nio.charset.StandardCharsets.UTF_8));
         try {
-            Files.write(Path.of("src/main/resources/compressed.lz"), compressedBytes);
+            test = Files.readAllBytes(Path.of("src/main/resources/Twenty_thousand_leagues_under_the_sea.txt"));
+            compressedBytes = compressWithHuffman(test);
+            Files.write(Path.of("src/main/resources/compressed.txt"), compressedBytes);
+            System.out.println("Original: " + test.length + " bytes");
+            System.out.println("Compressed: " + compressedBytes.length + " bytes");
         } catch (IOException e){
             e.printStackTrace();
         }
 
-        System.out.println("Original: " sample.length + " bytes");
-        System.out.println("Compressed: " + compressed.length + " bytes");
+
     }
 
 }
