@@ -101,13 +101,13 @@ public class HuffmanEncoder {
         SerializeTree(node.right, writer);
     }
 
-    private static void writeTree(Node node) throws IOException {
+    private static void WriteTree(Node node) throws IOException {
         BitWriter writer = new BitWriter();
         SerializeTree(node, writer);
         Files.write(Path.of("src/main/resources/compressed.txt"), writer.toByteArray());
     }
 
-    private static Node readTree(BitReader reader) throws EOFException {
+    private static Node ReadTree(BitReader reader) throws EOFException {
         int isLeaf = reader.readBit();
 
         if (isLeaf == 1){
@@ -115,9 +115,31 @@ public class HuffmanEncoder {
             return new Node(symbol,0);
         }
 
-        Node left = readTree(reader);
-        Node right = readTree(reader);
+        Node left = ReadTree(reader);
+        Node right = ReadTree(reader);
 
         return new Node(left, right);
+    }
+
+    private static int DecodeSymbolBits(BitReader reader, Node current) throws IOException {
+        Node node = current;
+
+        if (current.left==null && current.right == null){
+            if(reader.readBit() != 0){
+                throw new IOException("Invalid Huffman code");
+            }
+            return current.symbol;
+        }
+
+        while (current.left != null || current.right != null) {
+
+            int bit = reader.readBit();
+
+            current = (bit == 0)
+                    ? current.left
+                    : current.right;
+        }
+
+        return current.symbol;
     }
 }
