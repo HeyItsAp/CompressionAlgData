@@ -1,9 +1,13 @@
 package heyitsap.AlgData.compression;
 
+import heyitsap.AlgData.compression.Objects.BitReader;
 import heyitsap.AlgData.compression.Objects.BitWriter;
 import heyitsap.AlgData.compression.Objects.LZToken;
 import heyitsap.AlgData.compression.Objects.Node;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +90,57 @@ public class LZ {
             }
         }
         return out;
+    }
+
+    public static byte[] DecompressHuffman(byte[] CompressedData) throws IOException {
+        DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(CompressedData));
+
+        int originalSize = inputStream.readInt();
+
+        // Cases:
+        if (originalSize < 0) {
+            throw new IOException("Invalid original size");
+        }
+
+        if (originalSize == 0) {
+            return new byte[0];
+        }
+
+        BitReader reader = new BitReader(inputStream.readAllBytes());
+
+        Node root = HuffmanEncoder.ReadTree(reader);
+
+        byte[] result = new byte[originalSize];
+        int pos = 0;
+
+        while (pos < originalSize) {
+
+            int symbol = HuffmanEncoder.DecodeSymbolBits(reader, root);
+
+            if (symbol < 256) {
+                // Literal byte
+                result[pos++] = (byte) symbol;
+
+            } else {
+
+                // LZ77 match length
+                int length = (symbol - 256) + 3;
+
+                // Distance was stored as distance - 1
+                int distance = reader.readBits(12) + 1;
+
+                if (distance > pos || length > originalSize - pos) {
+                    throw new IOException("Invalid LZ77 match");
+                }
+
+                // Copy previous bytes, allowing overlap
+                for (int i = 0; i < length; i++) {
+                    result[pos] = result[pos - distance];
+                    pos++;
+                }
+            }
+        }
+        return result;
     }
 
 }
