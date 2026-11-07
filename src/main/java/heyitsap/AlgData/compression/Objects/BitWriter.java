@@ -10,7 +10,11 @@ public class BitWriter {
     private int currentByte = 0;
     private int bitCount = 0;
 
-
+    public void writeBits(int value, int count) {
+        for (int i = count - 1; i >= 0; i--) {
+            writeBit((value >>> i) & 1);
+        }
+    }
     public void writeBit(int bit) {
         currentByte = (currentByte << 1) | (bit & 1);
         bitCount++;
