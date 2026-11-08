@@ -42,7 +42,7 @@ public class HuffmanEncoder {
                         Comparator.comparingInt(node -> node.frequency)
                 );
         // ==== ======================
-        //
+        // oaoao
         // ==== ======================
         for (int i = 0; i < frequncies.length; i++){
             if(frequncies[i] > 0){

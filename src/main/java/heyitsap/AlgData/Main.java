@@ -61,8 +61,8 @@ public class Main {
                 compressedBytes = compressWithHuffman(original);
                 System.out.println("Writing data to output/compressed.txt...");
                 Files.write(Path.of("output/compressed.txt"), compressedBytes);
-                System.out.println("Original: " + original.length + " bytes");
-                System.out.println("Compressed: " + compressedBytes.length + " bytes");
+                System.out.println("- Original: " + original.length + " bytes");
+                System.out.println("- Compressed: " + compressedBytes.length + " bytes");
             } catch (IOException e){
                 e.printStackTrace();
             }
@@ -76,7 +76,7 @@ public class Main {
 
                 System.out.println("Writing to output/decompressed.txt ...");
                 Files.write(Path.of("output/decompressed.txt"), restored);
-                System.out.println("Restored: " + restored.length + " bytes");
+                System.out.println("- Restored: " + restored.length + " bytes");
             } catch (IOException e){
                 e.printStackTrace();
             }
