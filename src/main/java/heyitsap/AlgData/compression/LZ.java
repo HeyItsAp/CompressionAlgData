@@ -59,17 +59,24 @@ public class LZ {
             return outputStream.toByteArray();
         }
 
+        System.out.println("Compressing using LZ...");
         List<LZToken> tokens = LZ.compress(data);
 
+        System.out.println("Counting Frequencies of symbols...");
         int[] frequencies = HuffmanEncoder.countFrequncies(tokens);
+
+        System.out.println("Making huffman tree...");
         Node root = HuffmanEncoder.ConstructTree(frequencies);
         HashMap<Integer, String> codes = new HashMap<>();
+
+        System.out.println("Creating codes from huffman tree...");
         HuffmanEncoder.Codes(root, codes, "");
 
         BitWriter bitWriter = new BitWriter();
+        System.out.println("Saving tree...");
         HuffmanEncoder.SerializeTree(root, bitWriter);
 
-
+        System.out.println("Saving LZ tokens...");
         for (LZToken token : tokens) {
             if (token.isMatch) {
                 int symbol = 256 + (token.length - 3);
@@ -106,6 +113,7 @@ public class LZ {
         int originalSize = inputStream.readInt();
 
         // Cases:
+        System.out.println("Verifying file 1/2..");
         if (originalSize < 0) {
             throw new IOException("Invalid original size");
         }
@@ -114,13 +122,15 @@ public class LZ {
             return new byte[0];
         }
 
+        System.out.println("Getting data... ");
         BitReader reader = new BitReader(inputStream.readAllBytes());
 
+        System.out.println("Fetching saved huffman tree... ");
         Node root = HuffmanEncoder.UnSerializeTree(reader);
-
         byte[] result = new byte[originalSize];
         int pos = 0;
 
+        System.out.println("Decoding bits to bytes using huffman... ");
         while (pos < originalSize) {
             int symbol = HuffmanEncoder.DecodeSymbolBits(reader, root);
             if (symbol < 256) {
