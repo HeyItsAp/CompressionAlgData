@@ -1,52 +1,80 @@
 package heyitsap.AlgData;
 
-import heyitsap.AlgData.compression.HuffmanEncoder;
 import heyitsap.AlgData.compression.LZ;
-import heyitsap.AlgData.compression.Objects.BitWriter;
-import heyitsap.AlgData.compression.Objects.LZToken;
-import heyitsap.AlgData.compression.Objects.Node;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Scanner;
 
 import static heyitsap.AlgData.compression.LZ.compressWithHuffman;
 
 
 public class Main {
     public static void main() {
+        Path outputFolder = Path.of("output");
+        String pathString = "";
         System.out.println("Yo");
-
-        byte[] test;
+        Scanner scanner = new Scanner(System.in);
+        int valg;
+        byte[] original;
         byte[] compressedBytes;
-
-        try {
-            test = Files.readAllBytes(Path.of("src/main/resources/Twenty_thousand_leagues_under_the_sea.txt"));
-            compressedBytes = compressWithHuffman(test);
-            Files.write(Path.of("src/main/resources/compressed.txt"), compressedBytes);
-            System.out.println("Original: " + test.length + " bytes");
-            System.out.println("Compressed: " + compressedBytes.length + " bytes");
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
         byte[] restored;
+        do {
+            System.out.println("\n------- Compression Menu -------");
+            System.out.println("\n You can view the compressed file and decompressed file in the 'output' folder after first run time");
+            System.out.println("1. Forelesning.txt");
+            System.out.println("2. Forelesning.lyx");
+            System.out.println("3. opg6-kompr-lyx.txt");
+            System.out.println("4. Twenty_thousand_leagues_under_the_sea.txt");
+            System.out.println("5. Wikipeida (The 100 MB file)");
+            System.out.print("Write you choice (1-5):");
+            valg = scanner.nextInt();
+            scanner.nextLine();
 
-        try {
-            test = Files.readAllBytes(Path.of("src/main/resources/compressed.txt"));
-            restored = LZ.DecompressHuffman(test);
-            Files.write(Path.of("src/main/resources/decompressed.txt"), restored);
-            System.out.println("Restored: " + restored.length + " bytes");
-        } catch (IOException e){
-            e.printStackTrace();
-        }
 
+            switch (valg) {
+                case 1:
+                    pathString = "src/main/resources/diverse.txt";
+                    break;
+                case 2:
+                    pathString = "src/main/resources/diverse-lyx.txt";
+                    break;
+                case 3:
+                    pathString = "src/main/resources/opg6-kompr-lyx.txt";
+                    break;
+                case 4:
+                    pathString = "src/main/resources/Twenty_thousand_leagues_under_the_sea.txt";
+                    break;
+                case 5:
+                    pathString = "src/main/resources/Wikipedia.txt";
+                    break;
+                default:
+                    System.out.println("Invalid");
+                    break;
+            }
+            System.out.println("==== Compressing ====");
+            try {
+                Files.createDirectories(outputFolder);
+                original = Files.readAllBytes(Path.of(pathString));
+                compressedBytes = compressWithHuffman(original);
+                Files.write(Path.of("output/compressed.txt"), compressedBytes);
+                System.out.println("Original: " + original.length + " bytes");
+                System.out.println("Compressed: " + compressedBytes.length + " bytes");
+            } catch (IOException e){
+                e.printStackTrace();
+            }
 
-
-
+            System.out.println("==== Decompressing ====");
+            try {
+                original = Files.readAllBytes(Path.of("output/compressed.txt"));
+                restored = LZ.DecompressHuffman(original);
+                Files.write(Path.of("output/decompressed.txt"), restored);
+                System.out.println("Restored: " + restored.length + " bytes");
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        } while (valg != 5);
     }
-
 }
 
