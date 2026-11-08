@@ -32,6 +32,19 @@ public class Main {
             e.printStackTrace();
         }
 
+        byte[] restored;
+
+        try {
+            test = Files.readAllBytes(Path.of("src/main/resources/compressed.txt"));
+            restored = LZ.DecompressHuffman(test);
+            Files.write(Path.of("src/main/resources/decompressed.txt"), restored);
+            System.out.println("Restored: " + restored.length + " bytes");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+
 
     }
 

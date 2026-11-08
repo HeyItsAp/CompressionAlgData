@@ -101,13 +101,7 @@ public class HuffmanEncoder {
         SerializeTree(node.right, writer);
     }
 
-    public static void WriteTree(Node node) throws IOException {
-        BitWriter writer = new BitWriter();
-        SerializeTree(node, writer);
-        Files.write(Path.of("src/main/resources/compressed.txt"), writer.toByteArray());
-    }
-
-    public static Node ReadTree(BitReader reader) throws EOFException {
+    public static Node UnSerializeTree(BitReader reader) throws EOFException {
         int isLeaf = reader.readBit();
 
         if (isLeaf == 1){
@@ -115,8 +109,8 @@ public class HuffmanEncoder {
             return new Node(symbol,0);
         }
 
-        Node left = ReadTree(reader);
-        Node right = ReadTree(reader);
+        Node left = UnSerializeTree(reader);
+        Node right = UnSerializeTree(reader);
 
         return new Node(left, right);
     }

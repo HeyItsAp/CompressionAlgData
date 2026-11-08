@@ -5,12 +5,11 @@ import heyitsap.AlgData.compression.Objects.BitWriter;
 import heyitsap.AlgData.compression.Objects.LZToken;
 import heyitsap.AlgData.compression.Objects.Node;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 
 
 public class LZ {
@@ -49,32 +48,41 @@ public class LZ {
         }
         return LZTokens;
     }
-    public static byte[] compressWithHuffman(byte[] data) {
+    public static byte[] compressWithHuffman(byte[] data) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        DataOutputStream header = new DataOutputStream(outputStream);
+
+        // Original size
+        header.writeInt(data.length);
+
+        if (data.length == 0) {
+            return outputStream.toByteArray();
+        }
 
         List<LZToken> tokens = LZ.compress(data);
 
         int[] frequencies = HuffmanEncoder.countFrequncies(tokens);
-
         Node root = HuffmanEncoder.ConstructTree(frequencies);
-
         HashMap<Integer, String> codes = new HashMap<>();
-
         HuffmanEncoder.Codes(root, codes, "");
 
         BitWriter bitWriter = new BitWriter();
+        HuffmanEncoder.SerializeTree(root, bitWriter);
+
 
         for (LZToken token : tokens) {
             if (token.isMatch) {
                 int symbol = 256 + (token.length - 3);
                 bitWriter.writeCode(codes.get(symbol));
-                bitWriter.writeBit(token.distance -1);
+                bitWriter.writeBits(token.distance -1, 12);
 
             } else {
                 int symbol = token.character & 0xFF;
                 bitWriter.writeCode(codes.get(symbol));
             }
         }
-        return bitWriter.toByteArray();
+        outputStream.write(bitWriter.toByteArray());
+        return outputStream.toByteArray();
     }
     public static byte[] decompress(List<LZToken> LZTokens, int originalSize) {
         byte[] out = new byte[originalSize];
@@ -108,19 +116,16 @@ public class LZ {
 
         BitReader reader = new BitReader(inputStream.readAllBytes());
 
-        Node root = HuffmanEncoder.ReadTree(reader);
+        Node root = HuffmanEncoder.UnSerializeTree(reader);
 
         byte[] result = new byte[originalSize];
         int pos = 0;
 
         while (pos < originalSize) {
-
             int symbol = HuffmanEncoder.DecodeSymbolBits(reader, root);
-
             if (symbol < 256) {
                 // Literal byte
                 result[pos++] = (byte) symbol;
-
             } else {
 
                 // LZ77 match length

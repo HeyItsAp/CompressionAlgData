@@ -1,11 +1,11 @@
 import heyitsap.AlgData.compression.LZ;
 import heyitsap.AlgData.compression.Objects.LZToken;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static heyitsap.AlgData.compression.LZ.compress;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestLZ {
     @Test
